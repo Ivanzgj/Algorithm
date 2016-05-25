@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#define INF INT_MAX
+
 typedef enum VertexColor
 {
 	Vertex_WHITE = 0,	// 未被搜索到
@@ -20,7 +22,7 @@ typedef struct Vertex
 {
 	int number;
 	int weight;		// 边(p, v)的权重
-	int f;			// 深度优先搜索中标记完成搜索的次序/排名
+	int f;			// 深度优先搜索中标记完成搜索的次序/排名; 在prim算法中表示该结点是否已被加入最小生成树中
 	VertexColor color;	// 搜索过程标记搜索状态
 	struct Vertex *p;
 } Vertex;
@@ -36,5 +38,6 @@ void searchByWidthFirst(Graph *g, int start);
 void searchByDepthFirst(Graph *g);
 void printPath(Graph *g, int vertex);
 void topologySort(Graph *g, int **order, int *n);
+void prim(Graph *g, int **w, int root);
 
 #endif
