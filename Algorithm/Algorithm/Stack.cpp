@@ -29,6 +29,15 @@ int pop(Stack **s)
 	return value;
 }
 
+int isEmpty(Stack *s)
+{
+	if (s->pre == NULL)
+	{
+		return 1;
+	}
+	return 0;
+}
+
 void destroyStack(Stack **s)
 {
 	while (*s != NULL)

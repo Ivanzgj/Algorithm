@@ -289,11 +289,11 @@ void testGraph()
 	GNode n3; n3.number = 3;
 	GNode n4; n4.number = 4;
 	GNode n5; n5.number = 5;
-	GNode a; a.number = 3; GNode b; b.number = 4; n1.next = &a; a.next = &b; b.next = NULL;
-	GNode c; c.number = 3; n2.next = &c; c.next = NULL;
+	GNode a; a.number = 3; GNode b; b.number = 4; GNode y; y.number = 5; n1.next = &a; a.next = &b; b.next = &y; y.next = NULL;
+	GNode c; c.number = 3; GNode x; x.number = 4; n2.next = &c; c.next = &x; x.next = NULL;
 	GNode d; d.number = 1; GNode e; e.number = 2; n3.next = &d; d.next = &e; e.next = NULL;
-	GNode f; f.number = 5; GNode g; g.number = 1; n4.next = &f; f.next = &g; g.next = NULL;
-	GNode h; h.number = 4; n5.next = &h; h.next = NULL;
+	GNode f; f.number = 5; GNode g; g.number = 2; n4.next = &f; f.next = &g; g.next = NULL;
+	GNode h; h.number = 4; GNode i; i.number = 1; n5.next = &h; h.next = &i; i.next = NULL;
 	nodes[0] = n1;
 	nodes[1] = n2;
 	nodes[2] = n3;
@@ -301,6 +301,28 @@ void testGraph()
 	nodes[4] = n5;
 	graph.LinkTable = nodes;
 
-	searchByWidthFirst(&graph, 1);
+	searchByWidthFirst(&graph, 5);
 	printPath(&graph, 2);
+
+	n1.next = &e; e.next = NULL;
+	n2.next = &h; h.next = &f; f.next = NULL;
+	n3.next = &g; g.next = NULL;
+	n4.next = &y; y.next = NULL;
+	n5.next = &i; i.next = NULL;
+	nodes[0] = n1;
+	nodes[1] = n2;
+	nodes[2] = n3;
+	nodes[3] = n4;
+	nodes[4] = n5;
+	graph.LinkTable = nodes;
+
+	searchByDepthFirst(&graph);
+	printf("\n");
+	printPath(&graph, 2);
+
+	int *order, n;
+	topologySort(&graph, &order, &n);
+	printf("\n");
+	for (int i = 0; i < n; i++)	printf("%d ", order[i]);
+	free(order);
 }

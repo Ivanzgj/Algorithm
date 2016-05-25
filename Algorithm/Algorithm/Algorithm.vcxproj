@@ -80,6 +80,7 @@
   <ItemGroup>
     <ClInclude Include="BTree.h" />
     <ClInclude Include="DynamicProgramming.h" />
+    <ClInclude Include="Graph.h" />
     <ClInclude Include="Queue.h" />
     <ClInclude Include="Sort.h" />
     <ClInclude Include="Stack.h" />
@@ -88,6 +89,7 @@
   <ItemGroup>
     <ClCompile Include="BTree.cpp" />
     <ClCompile Include="DynamicProgramming.cpp" />
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Queue.cpp" />
     <ClCompile Include="Sort.cpp" />

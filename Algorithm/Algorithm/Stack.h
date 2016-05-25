@@ -11,6 +11,7 @@ typedef struct Stack {
 Stack* initStack();
 void push(Stack **s, int value);
 int pop(Stack **s);
+int isEmpty(Stack *s);
 void destroyStack(Stack **s);
 
 #endif

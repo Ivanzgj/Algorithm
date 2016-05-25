@@ -1,0 +1,16 @@
+*.sdf
+Algorithm/Algorithm.sdf
+*.suo
+Algorithm/Algorithm/Algorithm.vcxproj.filters
+*.pdb
+Algorithm/Debug/Algorithm.ilk
+*.exe
+Algorithm/Algorithm/Debug/Tree.obj
+*.obj
+Algorithm/Algorithm/Debug/Algorithm.tlog/link.write.1.tlog
+*.tlog
+Algorithm/Algorithm/Debug/Algorithm.log
+*.lastbuildstate
+Algorithm/Algorithm/Algorithm.vcxproj.filters
+*.filters
+*.opensdf

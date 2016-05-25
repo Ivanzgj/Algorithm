@@ -35,5 +35,6 @@ typedef struct Graph
 void searchByWidthFirst(Graph *g, int start);
 void searchByDepthFirst(Graph *g);
 void printPath(Graph *g, int vertex);
+void topologySort(Graph *g, int **order, int *n);
 
 #endif
