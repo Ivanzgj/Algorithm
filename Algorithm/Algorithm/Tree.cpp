@@ -241,13 +241,27 @@ Tree* initRBTree()
 	Tree *tree = initTree();
 	tree->nil = (Node *)malloc(sizeof(Node));
 	tree->nil->color = BLACK;
+	tree->nil->left = NULL;
+	tree->nil->right = NULL;
 	return tree;
+}
+
+void destroyRBNode(Tree *tree, Node *node)
+{
+	if (node != tree->nil)
+	{
+		Node *left = node->left;
+		Node *right = node->right;
+		free(node);
+		destroyRBNode(tree, left);
+		destroyRBNode(tree, right);
+	}
 }
 
 void destroyRBTree(Tree *tree)
 {
+	destroyRBNode(tree, tree->root);
 	free(tree->nil);
-	destroyTree(tree);
 }
 
 void insertRBTree(Tree *tree, int value)
@@ -444,6 +458,7 @@ void RBInsertFixup(Tree *tree, Node *z)
 			Node *y = z->parent->parent->right;
 			if (y->color == RED)
 			{
+				// 情况1
 				z->parent->color = BLACK;
 				y->color = BLACK;
 				z->parent->parent->color = RED;
@@ -453,9 +468,11 @@ void RBInsertFixup(Tree *tree, Node *z)
 			{
 				if (z == z->parent->right)
 				{
+					// 情况2
 					z = z->parent;
 					leftRotate(tree, z);
 				}
+				// 情况3
 				z->parent->color = BLACK;
 				z->parent->parent->color = RED;
 				rightRotate(tree, z->parent->parent);
@@ -497,6 +514,7 @@ void RBDeleteFixup(Tree *tree, Node *x)
 			Node *w = x->parent->right;
 			if (w->color == RED)
 			{
+				// 情况1
 				w->color = BLACK;
 				x->parent->color = RED;
 				leftRotate(tree,x->parent);
@@ -504,6 +522,7 @@ void RBDeleteFixup(Tree *tree, Node *x)
 			}
 			if (w->left->color == BLACK && w->right->color == BLACK)
 			{
+				// 情况2
 				w->color = RED;
 				x = x->parent;
 			}
@@ -511,11 +530,13 @@ void RBDeleteFixup(Tree *tree, Node *x)
 			{
 				if (w->right->color == BLACK)
 				{
+					// 情况3
 					w->left->color = BLACK;
 					w->color = RED;
 					rightRotate(tree, w);
 					w = x->parent->right;
 				}
+				// 情况4
 				w->color = x->parent->color;
 				x->parent->color = BLACK;
 				w->right->color = BLACK;
