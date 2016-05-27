@@ -306,6 +306,7 @@ void deleteFromBTree(BTree *tree, int key)
 			// 当key匹配到当前结点
 			if (next->n > tree->t)
 			{
+				// 情况2.a
 				keys->next->key = getMaxKey(next);
 				key = keys->next->key;	// 从next结点开始删除新key
 			}
@@ -314,11 +315,13 @@ void deleteFromBTree(BTree *tree, int key)
 				next = getLinkNode(node->children, which + 1);
 				if (next->n > tree->t)
 				{
+					// 情况2.b
 					keys->next->key = getMinKey(next);
 					key = keys->next->key;	// 从next结点开始删除新key
 				}
 				else
 				{
+					// 情况2.c
 					unionBNodes(node, which, which + 1);
 					next = getLinkNode(node->children, which);
 				}
@@ -333,14 +336,17 @@ void deleteFromBTree(BTree *tree, int key)
 				BNode *right = getLinkNode(node->children, which + 1);
 				if (left != NULL && left->n > tree->t)
 				{
+					// 情况3.a
 					moveKey(node, which - 1, which);		// 从左子树移动key
 				}
 				else if (right != NULL && right->n > tree->t)
 				{
+					// 情况3.a
 					moveKey(node, which + 1, which);	// 从右子树移动key
 				}
 				else
 				{
+					// 情况3.b
 					unionBNodes(node, which, which + 1);	// 与右子树合并
 				}
 			}
@@ -349,6 +355,7 @@ void deleteFromBTree(BTree *tree, int key)
 		node = next;
 	}
 
+	// 情况1
 	LinkKey *keys = node->key;
 	if (deleteLinkKey(keys, key))
 	{
