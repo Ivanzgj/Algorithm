@@ -135,7 +135,7 @@ void topologySort(Graph *g, int **order, int *n)
 
 int min(Vertex *vs, int num);
 
-// 输入图g的结点编号从1开始
+// prim算法，输入图g的结点编号从1开始
 void prim(Graph *g, int **w, int root)
 {
 	Vertex *vs = g->vertex;
@@ -213,6 +213,7 @@ void initialize(Graph *g, int s)
 // 松弛操作，检查<s, v>的距离是否比<s, u, v>大，是则更新<s, v>为<s, u, v>
 void relax(Vertex *u, Vertex *v, int w)
 {
+	if (u->weight == INF || w == INF)	return;
 	if (v->weight > u->weight + w)
 	{
 		v->weight = u->weight + w;
@@ -263,4 +264,33 @@ bool Bellman_Ford(Graph *g, int **w, int s)
 		}
 	}
 	return true;
+}
+
+/**
+* 有向无环图的单源最短路径，基于拓扑排序的顺序进行松弛操作
+*/
+void dagShortestPaths(Graph *g, int **w, int s)
+{
+	int *order, n;
+	GNode *linkTable = g->LinkTable;
+	Vertex *vs = g->vertex;
+
+	topologySort(g, &order, &n);
+
+	initialize(g, s);
+
+	for (int i = 0; i < n; i++)
+	{
+		int number = order[i];
+		GNode *node = linkTable + number - 1;
+		node = node->next;
+		Vertex *u = vs + number - 1;
+		while (node != NULL)
+		{
+			Vertex *v = vs + node->number - 1;
+			int weight = *((int*)w + (number - 1) * g->VertexNum + node->number - 1);
+			relax(u, v, weight);
+			node = node->next;
+		}
+	}
 }
