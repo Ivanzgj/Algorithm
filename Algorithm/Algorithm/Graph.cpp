@@ -210,7 +210,7 @@ void initialize(Graph *g, int s)
 	(vs + s - 1)->weight = 0;
 }
 
-// 松弛操作，检查<s, v>的距离是否比<s, u, v>大，是则更新<s, v>为<s, u, v>
+// 松弛操作，检查<s, ..., v>的距离是否比<s, ..., u, v>大，是则更新<s, ..., v>为<s, ..., u, v>
 void relax(Vertex *u, Vertex *v, int w)
 {
 	if (u->weight == INF || w == INF)	return;
@@ -293,4 +293,34 @@ void dagShortestPaths(Graph *g, int **w, int s)
 			node = node->next;
 		}
 	}
+}
+
+/**
+* 寻找从编号为s的结点开始的关键路径，该方法用于时序图，权重位于结点上而不是边上，而且权重均为正值
+* @return 关键路径的最后一个结点的编号，可以据此调用printPath方法打印关键路径
+*/
+int findKeyRoute(Graph *g, int **w, int s)
+{
+	for (int i = 0; i < g->VertexNum; i++)
+	{
+		for (int j = 0; j < g->VertexNum; j++)
+		{
+			*((int*)w + i*g->VertexNum + j) *= -1;
+		}
+	}
+
+	dagShortestPaths(g, w, s);
+
+	Vertex *vs = g->vertex;
+	int m = 0;
+	int min = INT_MAX;
+	for (int i = 0; i < g->VertexNum; i++)
+	{
+		if (min > (vs + i)->weight)
+		{
+			m = i;
+			min = (vs + i)->weight;
+		}
+	}
+	return m + 1;
 }

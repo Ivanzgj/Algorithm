@@ -21,10 +21,11 @@ void testGraph();
 void testPrim();
 void testBellmanFord();
 void testDagShortestPaths();
+void testKeyRoute();
 
 void main()
 {
-	testDagShortestPaths();
+	testKeyRoute();
 	system("pause");
 }
 
@@ -494,4 +495,50 @@ void testDagShortestPaths()
 			printf("%d\n", s);
 		}
 	}
+}
+
+void testKeyRoute()
+{
+	Graph graph;
+	graph.VertexNum = 6;
+	Vertex v[6];
+	Vertex v1; v1.number = 1; v1.p = NULL; v[0] = v1;
+	Vertex v2; v2.number = 2; v2.p = NULL; v[1] = v2;
+	Vertex v3; v3.number = 3; v3.p = NULL; v[2] = v3;
+	Vertex v4; v4.number = 4; v4.p = NULL; v[3] = v4;
+	Vertex v5; v5.number = 5; v5.p = NULL; v[4] = v5;
+	Vertex v6; v6.number = 6; v6.p = NULL; v[5] = v6;
+	graph.vertex = v;
+
+	GNode nodes[6];
+	GNode n1; n1.number = 1;
+	GNode n2; n2.number = 2;
+	GNode n3; n3.number = 3;
+	GNode n4; n4.number = 4;
+	GNode n5; n5.number = 5;
+	GNode n6; n6.number = 6;
+	GNode a; a.number = 2; GNode b; b.number = 3; n1.next = &a; a.next = &b; b.next = NULL;
+	GNode c; c.number = 3; GNode x; x.number = 4; n2.next = &c; c.next = &x; x.next = NULL;
+	GNode d; d.number = 4; GNode aa; aa.number = 5; GNode bb; bb.number = 6; n3.next = &d; d.next = &aa; aa.next = &bb; bb.next = NULL;
+	GNode f; f.number = 5; GNode g; g.number = 6; n4.next = &f; f.next = &g; g.next = NULL;
+	GNode h; h.number = 6; n5.next = &h; h.next = NULL;
+	n6.next = NULL;
+	nodes[0] = n1;
+	nodes[1] = n2;
+	nodes[2] = n3;
+	nodes[3] = n4;
+	nodes[4] = n5;
+	nodes[5] = n6;
+	graph.LinkTable = nodes;
+
+	int w[6][6] = { 0,		5,		3,		INF,	INF,	INF,
+					INF,	0,		2,		6,		INF,	INF,
+					INF,	INF,	0,		7,		4,		2,
+					INF,	INF,	INF,	0,		-1,		1,
+					INF,	INF,	INF,	INF,	0,		-2,
+					INF,	INF,	INF,	INF,	INF,	0 };
+	int s = 1;
+	int m = findKeyRoute(&graph, (int **)w, s);
+	printPath(&graph, m);
+	printf("\n³¤¶È£º%d\n", -(v + m - 1)->weight);
 }
