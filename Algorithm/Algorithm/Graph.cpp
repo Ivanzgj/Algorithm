@@ -189,3 +189,78 @@ int min(Vertex *vs, int num)
 	}
 	return m + 1;
 }
+
+
+
+
+
+/**
+* 单源最短路径
+*/
+
+void initialize(Graph *g, int s)
+{
+	Vertex *vs = g->vertex;
+	for (int i = 0; i < g->VertexNum; i++)
+	{
+		Vertex *v = vs + i;
+		v->p = NULL;
+		v->weight = INF;
+	}
+	(vs + s - 1)->weight = 0;
+}
+
+// 松弛操作，检查<s, v>的距离是否比<s, u, v>大，是则更新<s, v>为<s, u, v>
+void relax(Vertex *u, Vertex *v, int w)
+{
+	if (v->weight > u->weight + w)
+	{
+		v->weight = u->weight + w;
+		v->p = u;
+	}
+}
+
+/**
+* Bellman Ford 单源最短路径算法
+* @return true 没有负环路； false 有负环路，最短路径构造失败
+*/
+bool Bellman_Ford(Graph *g, int **w, int s)
+{
+	initialize(g, s);
+
+	GNode *linkTable = g->LinkTable;
+	for (int i = 1; i < g->VertexNum; i++)
+	{
+		// 反复将边加入到已有的最小路径图中，检查是否有更优路径
+		for (int j = 0; j < g->VertexNum; j++)
+		{
+			GNode *node = (linkTable + j)->next;
+			Vertex *u = g->vertex + j;
+			while (node != NULL)
+			{
+				Vertex *v = g->vertex + node->number - 1;
+				int weight = *((int*)w + j * g->VertexNum + node->number - 1);
+				relax(u, v, weight);
+				node = node->next;
+			}
+		}
+	}
+
+	// 通过检查是否都已达到最短路径来检查是否存在负环路
+	for (int j = 0; j < g->VertexNum; j++)
+	{
+		GNode *node = (linkTable + j)->next;
+		Vertex *u = g->vertex + j;
+		while (node != NULL)
+		{
+			Vertex *v = g->vertex + node->number - 1;
+			int weight = *((int*)w + j * g->VertexNum + node->number - 1);
+			if (v->weight > u->weight + weight)
+			{
+				return false;
+			}
+			node = node->next;
+		}
+	}
+	return true;
+}

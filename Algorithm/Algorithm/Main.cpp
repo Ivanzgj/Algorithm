@@ -19,10 +19,11 @@ void testBTree();
 void testDynamicProgramming();
 void testGraph();
 void testPrim();
+void testBellmanFord();
 
 void main()
 {
-	testPrim();
+	testBellmanFord();
 	system("pause");
 }
 
@@ -372,6 +373,60 @@ void testPrim()
 		{
 			Vertex *v = graph.vertex + i;
 			printf("(%d, %d) ", v->p->number, v->number);
+		}
+	}
+}
+
+void testBellmanFord()
+{
+	Graph graph;
+	graph.VertexNum = 5;
+	Vertex v[5];
+	Vertex v1; v1.number = 1; v1.p = NULL; v[0] = v1;
+	Vertex v2; v2.number = 2; v2.p = NULL; v[1] = v2;
+	Vertex v3; v3.number = 3; v3.p = NULL; v[2] = v3;
+	Vertex v4; v4.number = 4; v4.p = NULL; v[3] = v4;
+	Vertex v5; v5.number = 5; v5.p = NULL; v[4] = v5;
+	graph.vertex = v;
+
+	GNode nodes[5];
+	GNode n1; n1.number = 1;
+	GNode n2; n2.number = 2;
+	GNode n3; n3.number = 3;
+	GNode n4; n4.number = 4;
+	GNode n5; n5.number = 5;
+	GNode a; a.number = 2; GNode b; b.number = 4; n1.next = &a; a.next = &b; b.next = NULL;
+	GNode c; c.number = 3; GNode x; x.number = 4; GNode z; z.number = 5; n2.next = &c; c.next = &x; x.next = &z; z.next = NULL;
+	GNode d; d.number = 2; n3.next = &d; d.next = NULL;
+	GNode f; f.number = 5; GNode g; g.number = 3; n4.next = &f; f.next = &g; g.next = NULL;
+	GNode h; h.number = 1; GNode i; i.number = 3; n5.next = &h; h.next = &i; i.next = NULL;
+	nodes[0] = n1;
+	nodes[1] = n2;
+	nodes[2] = n3;
+	nodes[3] = n4;
+	nodes[4] = n5;
+	graph.LinkTable = nodes;
+
+	int w[5][5] = { 0,		6,			INF,		7,		INF,
+					INF,	0,			5,			8,		-4,
+					INF,	-2,			0,			INF,	INF,
+					INF,	INF,		-3,			0,		9,
+					2,		INF,		7,			INF,	0 };
+	int s = 1;
+	Bellman_Ford(&graph, (int **)w, s);
+
+	for (int i = 0; i < graph.VertexNum; i++)
+	{
+		if (i != s - 1)
+		{
+			Vertex *v = graph.vertex + i;
+			printf("路径长度为%d , 路径为 : ", v->weight);
+			while (v->p != NULL)
+			{
+				printf("%d <- ", v->number, v->p->number);
+				v = v->p;
+			}
+			printf("%d\n", s);
 		}
 	}
 }
