@@ -22,7 +22,7 @@ typedef struct Vertex
 {
 	int number;
 	int weight;		// 边(p, v)的权重，用于最小生成树中记录该顶点到已有树的最小距离；在计算最短路径时为该结点到源点的距离
-	int f;			// 深度优先搜索中标记完成搜索的次序/排名; 在prim算法中表示该结点是否已被加入最小生成树中
+	int f;			// 深度优先搜索中标记完成搜索的次序/排名; 在prim算法中表示该结点是否已被加入最小生成树中,在Dijkstra中标记结点是否已经搜寻最短路径完毕
 	VertexColor color;	// 搜索过程标记搜索状态
 	struct Vertex *p;
 } Vertex;
@@ -44,5 +44,6 @@ void prim(Graph *g, int **w, int root);
 bool Bellman_Ford(Graph *g, int **w, int s);
 void dagShortestPaths(Graph *g, int **w, int s);
 int findKeyRoute(Graph *g, int **w, int s);
+void dijkstra(Graph *g, int **w, int s);
 
 #endif

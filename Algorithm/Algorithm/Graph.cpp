@@ -206,6 +206,7 @@ void initialize(Graph *g, int s)
 		Vertex *v = vs + i;
 		v->p = NULL;
 		v->weight = INF;
+		v->f = 0;
 	}
 	(vs + s - 1)->weight = 0;
 }
@@ -296,7 +297,7 @@ void dagShortestPaths(Graph *g, int **w, int s)
 }
 
 /**
-* 寻找从编号为s的结点开始的关键路径，该方法用于时序图，权重位于结点上而不是边上，而且权重均为正值
+* 寻找从编号为s的结点开始的关键路径，该方法用于时序图，权重在边上且均为正值
 * @return 关键路径的最后一个结点的编号，可以据此调用printPath方法打印关键路径
 */
 int findKeyRoute(Graph *g, int **w, int s)
@@ -323,4 +324,41 @@ int findKeyRoute(Graph *g, int **w, int s)
 		}
 	}
 	return m + 1;
+}
+
+/**
+* Dijkstra算法，要求所有边的权重均为非负值，结点的编号从1开始
+*/
+void dijkstra(Graph *g, int **w, int s)
+{
+	initialize(g, s);
+
+	Vertex *vs = g->vertex;
+	GNode *linkTable = g->LinkTable;
+	for (int i = 1; i < g->VertexNum; i++)
+	{
+		int min = INT_MAX;
+		int number = 0;
+		// 找到目前距离s最短的顶点
+		for (int j = 0; j < g->VertexNum; j++)
+		{
+			if (min >(vs + j)->weight && (vs+j)->f == 0)
+			{
+				min = (vs + j)->weight;
+				number = j + 1;
+				(vs + j)->f = 1;
+			}
+		}
+		if (number == 0)	return;
+		// 加入到各个与number相连的顶点中做松弛更新操作
+		GNode *node = (linkTable + number - 1)->next;
+		Vertex *u = vs + number - 1;
+		while (node != NULL)
+		{
+			Vertex *v = vs + node->number - 1;
+			int weight = *((int*)w + (number - 1)*g->VertexNum + node->number - 1);
+			relax(u, v, weight);
+			node = node->next;
+		}
+	}
 }
