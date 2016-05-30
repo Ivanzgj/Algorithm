@@ -614,8 +614,15 @@ void testFloyd()
 	{
 		for (int j = 0; j < 5; j++)
 		{
-			printf("长度:%d , \t路径:", lenMatrix[i][j]);
-			printIJPath((int**)priorMatrix, 5, i + 1, j + 1);
+			if (lenMatrix[i][j] == INF)
+			{
+				printf("从%d到%d\t\t长度:INF\n", i, j);
+			}
+			else
+			{
+				printf("从%d到%d\t\t长度:%d\t\t路径:", i, j, lenMatrix[i][j]);
+				printIJPath((int**)priorMatrix, 5, i + 1, j + 1);
+			}
 		}
 	}
 }
