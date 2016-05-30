@@ -3,6 +3,8 @@
 #include "Stack.h"
 #include <stdio.h>
 
+// 以下方法需要输入图时均要求图的顶点编号从1开始！！！
+
 /**
 * 广度优先搜索，要求输入图g的结点编号从1开始
 */
@@ -339,7 +341,7 @@ void dijkstra(Graph *g, int **w, int s)
 	{
 		int min = INT_MAX;
 		int number = 0;
-		// 找到目前距离s最短的顶点
+		// 找到目前距离s最短的顶点，该顶点搜索最短距离结束
 		for (int j = 0; j < g->VertexNum; j++)
 		{
 			if (min >(vs + j)->weight && (vs+j)->f == 0)
@@ -359,6 +361,68 @@ void dijkstra(Graph *g, int **w, int s)
 			int weight = *((int*)w + (number - 1)*g->VertexNum + node->number - 1);
 			relax(u, v, weight);
 			node = node->next;
+		}
+	}
+}
+
+/**
+* 根据前驱子图打印i到j的路径，输入顶点编号从1开始，输出顶点编号从1开始
+*/
+void printIJPath(int **prior, int vertexNum, int i, int j)
+{
+	i--; j--;
+	printf("%d", j + 1);
+	int k = *((int*)prior + i*vertexNum + j);
+	while (k != -1)
+	{
+		printf(" <- %d", k + 1);
+		k = *((int*)prior + i*vertexNum + k);
+	}
+	printf("\n");
+}
+
+/**
+* Floyd 寻找结点对的最短路径算法
+* w 权重图
+* vertexNum 顶点个数
+* lenMatrix 计算结果的最短路径长度存储矩阵（二维）
+* priorMatrix 前驱子图（二维），路径<i, ..., j>重点j的前一个顶点k存储在priorMatrix[i][j]中
+*/
+void Floyd_WallShall(int **w, int vertextNum, int **lenMatrix, int **priorMatrix)
+{
+	// 初始化
+	for (int i = 0; i < vertextNum; i++)
+	{
+		for (int j = 0; j < vertextNum; j++)
+		{
+			*((int*)lenMatrix + i*vertextNum + j) = *((int*)w + i*vertextNum + j);
+			if (*((int*)w + i*vertextNum + j) != INF && i != j)
+			{
+				*((int*)priorMatrix + i*vertextNum + j) = i;
+			}
+			else
+			{
+				*((int*)priorMatrix + i*vertextNum + j) = -1;
+			}
+		}
+	}
+
+	// Floyd算法
+	for (int k = 0; k < vertextNum; k++)
+	{
+		for (int i = 0; i < vertextNum; i++)
+		{
+			for (int j = 0; j < vertextNum; j++)
+			{
+				int Dij = *((int*)lenMatrix + i*vertextNum + j);
+				int Dik = *((int*)lenMatrix + i*vertextNum + k);
+				int Dkj = *((int*)lenMatrix + k*vertextNum + j);
+				if (Dik != INF && Dkj != INF && Dij > Dik + Dkj)
+				{
+					*((int*)lenMatrix + i*vertextNum + j) = Dik + Dkj;
+					*((int*)priorMatrix + i*vertextNum + j) = *((int*)priorMatrix + k*vertextNum + j);
+				}
+			}
 		}
 	}
 }

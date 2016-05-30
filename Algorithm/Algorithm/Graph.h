@@ -46,4 +46,7 @@ void dagShortestPaths(Graph *g, int **w, int s);
 int findKeyRoute(Graph *g, int **w, int s);
 void dijkstra(Graph *g, int **w, int s);
 
+void printIJPath(int **prior, int vertexNum, int i, int j);
+void Floyd_WallShall(int **w, int vertextNum, int **lenMatrix, int **priorMatrix);
+
 #endif

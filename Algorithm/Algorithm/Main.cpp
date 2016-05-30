@@ -23,10 +23,11 @@ void testBellmanFord();
 void testDagShortestPaths();
 void testKeyRoute();
 void testDijkstra();
+void testFloyd();
 
 void main()
 {
-	testDijkstra();
+	testFloyd();
 	system("pause");
 }
 
@@ -593,6 +594,27 @@ void testDijkstra()
 				v = v->p;
 			}
 			printf("%d\n", s);
+		}
+	}
+}
+
+void testFloyd()
+{
+	int w[5][5] = {	0,		3,		8,		INF,	-4,
+					INF,	0,		INF,	1,		7,
+					INF,	4,		0,		INF,	INF,
+					2,		INF,	-5,		0,		INF,
+					INF,	INF,	INF,	6,		0};
+	int lenMatrix[5][5];
+	int priorMatrix[5][5];
+
+	Floyd_WallShall((int**)w, 5, (int**)lenMatrix, (int**)priorMatrix);
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			printf("³¤¶È:%d , \tÂ·¾¶:", lenMatrix[i][j]);
+			printIJPath((int**)priorMatrix, 5, i + 1, j + 1);
 		}
 	}
 }
