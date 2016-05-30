@@ -24,10 +24,11 @@ void testDagShortestPaths();
 void testKeyRoute();
 void testDijkstra();
 void testFloyd();
+void testTransitiveClosure();
 
 void main()
 {
-	testFloyd();
+	testTransitiveClosure();
 	system("pause");
 }
 
@@ -615,6 +616,25 @@ void testFloyd()
 		{
 			printf("长度:%d , \t路径:", lenMatrix[i][j]);
 			printIJPath((int**)priorMatrix, 5, i + 1, j + 1);
+		}
+	}
+}
+
+void testTransitiveClosure()
+{
+	int w[5][5] = { 0,		3,		8,		INF,	-4,
+					INF,	0,		INF,	1,		7,
+					INF,	4,		0,		INF,	INF,
+					2,		INF,	-5,		0,		INF,
+					INF,	INF,	INF,	6,		0 };
+	int result[5][5];
+
+	transitiveClosure((int**)w, 5, (int**)result);
+	for (int i = 0; i < 5; i++)
+	{
+		for (int j = 0; j < 5; j++)
+		{
+			printf("从%d到%d:%d\n", i + 1, j + 1, result[i][j]);
 		}
 	}
 }

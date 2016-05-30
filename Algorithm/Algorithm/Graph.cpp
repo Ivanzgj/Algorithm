@@ -388,40 +388,77 @@ void printIJPath(int **prior, int vertexNum, int i, int j)
 * lenMatrix 计算结果的最短路径长度存储矩阵（二维）
 * priorMatrix 前驱子图（二维），路径<i, ..., j>重点j的前一个顶点k存储在priorMatrix[i][j]中
 */
-void Floyd_WallShall(int **w, int vertextNum, int **lenMatrix, int **priorMatrix)
+void Floyd_WallShall(int **w, int vertexNum, int **lenMatrix, int **priorMatrix)
 {
 	// 初始化
-	for (int i = 0; i < vertextNum; i++)
+	for (int i = 0; i < vertexNum; i++)
 	{
-		for (int j = 0; j < vertextNum; j++)
+		for (int j = 0; j < vertexNum; j++)
 		{
-			*((int*)lenMatrix + i*vertextNum + j) = *((int*)w + i*vertextNum + j);
-			if (*((int*)w + i*vertextNum + j) != INF && i != j)
+			*((int*)lenMatrix + i*vertexNum + j) = *((int*)w + i*vertexNum + j);
+			if (*((int*)w + i*vertexNum + j) != INF && i != j)
 			{
-				*((int*)priorMatrix + i*vertextNum + j) = i;
+				*((int*)priorMatrix + i*vertexNum + j) = i;
 			}
 			else
 			{
-				*((int*)priorMatrix + i*vertextNum + j) = -1;
+				*((int*)priorMatrix + i*vertexNum + j) = -1;
 			}
 		}
 	}
 
 	// Floyd算法
-	for (int k = 0; k < vertextNum; k++)
+	for (int k = 0; k < vertexNum; k++)
 	{
-		for (int i = 0; i < vertextNum; i++)
+		for (int i = 0; i < vertexNum; i++)
 		{
-			for (int j = 0; j < vertextNum; j++)
+			for (int j = 0; j < vertexNum; j++)
 			{
-				int Dij = *((int*)lenMatrix + i*vertextNum + j);
-				int Dik = *((int*)lenMatrix + i*vertextNum + k);
-				int Dkj = *((int*)lenMatrix + k*vertextNum + j);
+				int Dij = *((int*)lenMatrix + i*vertexNum + j);
+				int Dik = *((int*)lenMatrix + i*vertexNum + k);
+				int Dkj = *((int*)lenMatrix + k*vertexNum + j);
 				if (Dik != INF && Dkj != INF && Dij > Dik + Dkj)
 				{
-					*((int*)lenMatrix + i*vertextNum + j) = Dik + Dkj;
-					*((int*)priorMatrix + i*vertextNum + j) = *((int*)priorMatrix + k*vertextNum + j);
+					*((int*)lenMatrix + i*vertexNum + j) = Dik + Dkj;
+					*((int*)priorMatrix + i*vertexNum + j) = *((int*)priorMatrix + k*vertexNum + j);
 				}
+			}
+		}
+	}
+}
+
+/**
+* 判断结点对是否存在传递闭包
+*/
+void transitiveClosure(int **w, int vertexNum, int **result)
+{
+	// 初始化
+	for (int i = 0; i < vertexNum; i++)
+	{
+		for (int j = 0; j < vertexNum; j++)
+		{
+			if (*((int*)w + i*vertexNum + j) != INF || i == j)
+			{
+				*((int*)result + i*vertexNum + j) = 1;
+			}
+			else
+			{
+				*((int*)result + i*vertexNum + j) = 0;
+			}
+		}
+	}
+
+	// 应用Floyd算法判断连通性
+	for (int k = 0; k < vertexNum; k++)
+	{
+		for (int i = 0; i < vertexNum; i++)
+		{
+			for (int j = 0; j < vertexNum; j++)
+			{
+				int Dij = *((int*)result + i*vertexNum + j);
+				int Dik = *((int*)result + i*vertexNum + k);
+				int Dkj = *((int*)result + k*vertexNum + j);
+				*((int*)result + i*vertexNum + j) = Dij | (Dik & Dkj);
 			}
 		}
 	}
