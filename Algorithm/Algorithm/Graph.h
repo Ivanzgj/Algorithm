@@ -49,5 +49,6 @@ void dijkstra(Graph *g, int **w, int s);
 void printIJPath(int **prior, int vertexNum, int i, int j);
 void Floyd_WallShall(int **w, int vertexNum, int **lenMatrix, int **priorMatrix);
 void transitiveClosure(int **w, int vertexNum, int **result);
+bool Johnson(Graph *g, int **w, int **lenMatrix, int **priorMatrix);
 
 #endif

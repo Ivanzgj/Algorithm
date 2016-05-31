@@ -25,10 +25,11 @@ void testKeyRoute();
 void testDijkstra();
 void testFloyd();
 void testTransitiveClosure();
+void testJohnson();
 
 void main()
 {
-	testTransitiveClosure();
+	testJohnson();
 	system("pause");
 }
 
@@ -642,6 +643,64 @@ void testTransitiveClosure()
 		for (int j = 0; j < 5; j++)
 		{
 			printf("从%d到%d:%d\n", i + 1, j + 1, result[i][j]);
+		}
+	}
+}
+
+void testJohnson()
+{
+	Graph graph;
+	graph.VertexNum = 5;
+	Vertex v[5];
+	Vertex v1; v1.number = 1; v1.p = NULL; v[0] = v1;
+	Vertex v2; v2.number = 2; v2.p = NULL; v[1] = v2;
+	Vertex v3; v3.number = 3; v3.p = NULL; v[2] = v3;
+	Vertex v4; v4.number = 4; v4.p = NULL; v[3] = v4;
+	Vertex v5; v5.number = 5; v5.p = NULL; v[4] = v5;
+	graph.vertex = v;
+
+	GNode nodes[5];
+	GNode n1; n1.number = 1;
+	GNode n2; n2.number = 2;
+	GNode n3; n3.number = 3;
+	GNode n4; n4.number = 4;
+	GNode n5; n5.number = 5;
+	GNode a; a.number = 2; GNode b; b.number = 3; GNode bb; bb.number = 5; n1.next = &a; a.next = &b; b.next = &bb; bb.next = NULL;
+	GNode x; x.number = 4; GNode z; z.number = 5; n2.next = &x; x.next = &z; z.next = NULL;
+	GNode d; d.number = 2; n3.next = &d; d.next = NULL;
+	GNode f; f.number = 1; GNode g; g.number = 3; n4.next = &f; f.next = &g; g.next = NULL;
+	GNode h; h.number = 4; n5.next = &h; h.next = NULL;
+	nodes[0] = n1;
+	nodes[1] = n2;
+	nodes[2] = n3;
+	nodes[3] = n4;
+	nodes[4] = n5;
+	graph.LinkTable = nodes;
+
+	int w[5][5] = { 0,		3,		8,		INF,	-4,
+					INF,	0,		INF,	1,		7,
+					INF,	4,		0,		INF,	INF,
+					2,		INF,	-5,		0,		INF,
+					INF,	INF,	INF,	6,		0 };
+	int lenMatrix[5][5];
+	int priorMatrix[5][5];
+
+	if (Johnson(&graph, (int**)w, (int**)lenMatrix, (int**)priorMatrix))
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			for (int j = 0; j < 5; j++)
+			{
+				if (lenMatrix[i][j] == INF)
+				{
+					printf("从%d到%d\t\t长度:INF\n", i, j);
+				}
+				else
+				{
+					printf("从%d到%d\t\t长度:%d\t\t路径:", i, j, lenMatrix[i][j]);
+					printIJPath((int**)priorMatrix, 5, i + 1, j + 1);
+				}
+			}
 		}
 	}
 }

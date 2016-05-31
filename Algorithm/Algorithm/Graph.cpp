@@ -344,14 +344,14 @@ void dijkstra(Graph *g, int **w, int s)
 		// 找到目前距离s最短的顶点，该顶点搜索最短距离结束
 		for (int j = 0; j < g->VertexNum; j++)
 		{
-			if (min >(vs + j)->weight && (vs+j)->f == 0)
+			if (min > (vs + j)->weight && (vs + j)->f == 0)
 			{
 				min = (vs + j)->weight;
 				number = j + 1;
-				(vs + j)->f = 1;
 			}
 		}
 		if (number == 0)	return;
+		(vs + number - 1)->f = 1;
 		// 加入到各个与number相连的顶点中做松弛更新操作
 		GNode *node = (linkTable + number - 1)->next;
 		Vertex *u = vs + number - 1;
@@ -462,4 +462,117 @@ void transitiveClosure(int **w, int vertexNum, int **result)
 			}
 		}
 	}
+}
+
+void addSinglePoint(Graph *g, int s)
+{
+	Vertex *vs = g->vertex;
+	GNode *linkTable = g->LinkTable;
+	int vertexNum = g->VertexNum;
+
+	Vertex *newVs = (Vertex *)malloc(sizeof(Vertex)* (vertexNum + 1));
+	GNode *newLinkTable = (GNode *)malloc(sizeof(GNode)* (vertexNum + 1));
+	int i;
+	for (i = 0; i < vertexNum; i++)
+	{
+		newVs[i] = vs[i];
+		newLinkTable[i] = linkTable[i];
+	}
+	newVs[i].number = s;
+	GNode *node = (GNode *)malloc(sizeof(GNode));
+	node->number = s;
+	node->next = NULL;
+	GNode *del = node;
+	for (i = 0; i < vertexNum; i++)
+	{
+		GNode *next = (GNode *)malloc(sizeof(GNode));
+		next->number = i + 1;
+		next->next = NULL;
+		node->next = next;
+		node = next;
+	}
+	newLinkTable[i] = *del;
+	free(del);
+
+	g->LinkTable = newLinkTable;
+	g->vertex = newVs;
+	g->VertexNum++;
+}
+
+/**
+* Johnson算法计算结点对最短路径
+*/
+bool Johnson(Graph *g, int **w, int **lenMatrix, int **priorMatrix)
+{
+	// save
+	Vertex *vs = g->vertex;
+	GNode *linkTable = g->LinkTable;
+	int vertexNum = g->VertexNum;
+
+	// add s point
+	addSinglePoint(g, g->VertexNum + 1);
+	int *newW = (int *)malloc(sizeof(int) * g->VertexNum * g->VertexNum);
+	for (int i = 0; i < g->VertexNum; i++)
+	{
+		for (int j = 0; j < g->VertexNum; j++)
+		{
+			if (i == g->VertexNum - 1 || j == g->VertexNum - 1)
+			{
+				*(newW + i*g->VertexNum + j) = 0;
+			}
+			else
+			{
+				*(newW + i * g->VertexNum + j) = *((int *)w + i * vertexNum + j);
+			}
+		}
+	}
+
+	// Bellman-Ford算法
+	if (Bellman_Ford(g, (int **)newW, g->VertexNum) == false)
+	{
+		return false;
+	}
+
+	Vertex *newVs = g->vertex;
+	// recover
+	g->LinkTable = linkTable;
+	g->vertex = vs;
+	g->VertexNum--;
+	// 重新赋予权值
+	for (int i = 0; i < vertexNum; i++)
+	{
+		GNode *node = linkTable + i;
+		Vertex *u = newVs + i;
+		node = node->next;
+		while (node != NULL)
+		{
+			Vertex *v = newVs + node->number - 1;
+			if (*((int*)w + i*vertexNum + node->number - 1) != INF)
+			{
+				*((int*)w + i*vertexNum + node->number - 1) += u->weight - v->weight;
+			}
+			node = node->next;
+		}
+	}
+
+	// 反复对每个顶点调用Dijkstra算法计算结点对最短距离
+	for (int i = 0; i < vertexNum; i++)
+	{
+		dijkstra(g, w, i+1);
+		Vertex *u = newVs + i;
+		for (int j = 0; j < vertexNum; j++)
+		{
+			Vertex *v = newVs + j;
+			*((int*)lenMatrix + i*vertexNum + j) = (g->vertex + j)->weight + v->weight - u->weight;
+			if ((g->vertex + j)->p != NULL)
+			{
+				*((int*)priorMatrix + i*vertexNum + j) = (g->vertex + j)->p->number - 1;
+			}
+			else
+			{
+				*((int*)priorMatrix + i*vertexNum + j) = -1;
+			}
+		}
+	}
+	return true;
 }
