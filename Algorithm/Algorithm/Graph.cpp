@@ -197,7 +197,7 @@ int min(Vertex *vs, int num)
 
 
 /**
-* 单源最短路径
+* 最短路径
 */
 
 void initialize(Graph *g, int s)
@@ -575,4 +575,127 @@ bool Johnson(Graph *g, int **w, int **lenMatrix, int **priorMatrix)
 		}
 	}
 	return true;
+}
+
+
+
+
+
+/**
+* 最大流
+*/
+
+// 计算残存网络
+void calculateENet(int **c, int vertexNum, int **f, int **e)
+{
+	for (int i = 0; i < vertexNum; i++)
+	{
+		for (int j = 0; j < vertexNum; j++)
+		{
+			int a = *((int*)c + i*vertexNum + j);
+			if (a != 0)
+			{
+				*((int*)e + i*vertexNum + j) = a - *((int*)f + i*vertexNum + j);
+				*((int*)e + j*vertexNum + i) = *((int*)f + i*vertexNum + j);
+			}
+			else
+			{
+				*((int*)e + i*vertexNum + j) = 0;
+			}
+		}
+	}
+}
+
+// 寻找增广路径
+int findRoute(int **e, int vertexNum, int *priorMatrix, int s,int t)
+{
+	s--; t--;
+	int *d = (int *)malloc(sizeof(int)*vertexNum);
+	// initialize
+	for (int i = 0; i < vertexNum; i++)
+	{
+		d[i] = 0;
+		priorMatrix[i] = -1;
+	}
+	d[s] = 1;
+	// 反复用边<i,j>做松弛操作，将<s,...,j>更新为<s,...,i,j>
+	for (int k = 0; k < vertexNum; k++)
+	{
+		for (int i = 0; i < vertexNum; i++)
+		{
+			for (int j = 0; j < vertexNum; j++)
+			{
+				if (d[j] == 0)
+				{
+					d[j] |= (d[i] & (*((int*)e + i*vertexNum + j) > 0));
+					if (d[j] == 1)
+					{
+						priorMatrix[j] = i;
+					}
+				}
+			}
+		}
+	}
+	if (d[t] == 0)	return 0;
+
+	int min = INT_MAX;
+	int pre = priorMatrix[t];
+	while (pre != -1)
+	{
+		if (min > *((int*)e + pre*vertexNum + t))
+		{
+			min = *((int*)e + pre*vertexNum + t);
+		}
+		t = pre;
+		pre = priorMatrix[t];
+	}
+	return min;
+}
+
+/**
+* Ford-Fulkerson方法的一种实现
+* @param c 二维矩阵，记录每条边的容量
+* @param vertexNum 顶点个数，包括起点和终点
+* @param s 起点编号，编号从1开始
+* @param t 终点编号
+* @param f 输出流网络矩阵，二维矩阵，记录每条边的流量
+*/
+void Ford_Fulkerson(int **c, int vertexNum, int s, int t, int **f)
+{
+	int *e = (int *)malloc(sizeof(int)*vertexNum*vertexNum);	// 残存网络
+	int *priorMatrix = (int *)malloc(sizeof(int)*vertexNum);	// 增广路径的前驱子图
+
+	// initialize
+	for (int i = 0; i < vertexNum;i++)
+	{
+		for (int j = 0; j < vertexNum; j++)
+		{
+			*(f + i*vertexNum + j) = 0;
+		}
+	}
+
+	while (1)
+	{
+		calculateENet(c, vertexNum, (int **)f, (int **)e);	// 计算残存网络
+		int min;
+		if ((min = findRoute((int **)e, vertexNum, priorMatrix, s, t)) == 0)	// 寻找增广路径及其最小流值
+		{
+			break;
+		}
+		int pre = priorMatrix[t - 1];
+		int next = t - 1;
+		while (pre != -1)		// 按增广路径更新流网络
+		{
+			if (*((int*)c + pre * vertexNum + next) != 0)
+			{
+				*((int*)f + pre * vertexNum + next) += min;
+			}
+			else
+			{
+				*((int*)f + pre * vertexNum + next) -= min;
+			}
+			next = pre;
+			pre = priorMatrix[pre];
+		}
+	}
 }

@@ -51,4 +51,6 @@ void Floyd_WallShall(int **w, int vertexNum, int **lenMatrix, int **priorMatrix)
 void transitiveClosure(int **w, int vertexNum, int **result);
 bool Johnson(Graph *g, int **w, int **lenMatrix, int **priorMatrix);
 
+void Ford_Fulkerson(int **c, int vertexNum, int s, int t, int **f);
+
 #endif

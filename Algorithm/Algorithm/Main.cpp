@@ -26,10 +26,11 @@ void testDijkstra();
 void testFloyd();
 void testTransitiveClosure();
 void testJohnson();
+void testFord();
 
 void main()
 {
-	testJohnson();
+	testFord();
 	system("pause");
 }
 
@@ -617,11 +618,11 @@ void testFloyd()
 		{
 			if (lenMatrix[i][j] == INF)
 			{
-				printf("从%d到%d\t\t长度:INF\n", i, j);
+				printf("从%d到%d\t\t长度:INF\n", i + 1, j + 1);
 			}
 			else
 			{
-				printf("从%d到%d\t\t长度:%d\t\t路径:", i, j, lenMatrix[i][j]);
+				printf("从%d到%d\t\t长度:%d\t\t路径:", i + 1, j + 1, lenMatrix[i][j]);
 				printIJPath((int**)priorMatrix, 5, i + 1, j + 1);
 			}
 		}
@@ -700,6 +701,29 @@ void testJohnson()
 					printf("从%d到%d\t\t长度:%d\t\t路径:", i, j, lenMatrix[i][j]);
 					printIJPath((int**)priorMatrix, 5, i + 1, j + 1);
 				}
+			}
+		}
+	}
+}
+
+void testFord()
+{
+	int c[6][6] = {	0,		16,		13,		0,		0,		0,
+					0,		0,		0,		12,		0,		0,
+					0,		4,		0,		0,		14,		0,
+					0,		0,		9,		0,		0,		20,
+					0,		0,		0,		7,		0,		4,
+					0,		0,		0,		0,		0,		0	};
+	int f[6][6];
+	Ford_Fulkerson((int **)c, 6, 1, 6, (int **)f);
+	for (int i = 0; i < 6; i++)
+	{
+		for (int j = 0; j < 6; j++)
+		{
+			int flow = f[i][j];
+			if (flow != 0)
+			{
+				printf("%d -> %d : %d\n", i + 1, j + 1, flow);
 			}
 		}
 	}
