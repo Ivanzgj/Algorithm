@@ -5,6 +5,7 @@
 #include "DynamicProgramming.h"
 #include "BTree.h"
 #include "Graph.h"
+#include "FibonaciHeap.h"
 #include <stdio.h>
 
 void testSort();
@@ -27,10 +28,11 @@ void testFloyd();
 void testTransitiveClosure();
 void testJohnson();
 void testFord();
+void testFibonaciHeap();
 
 void main()
 {
-	testFord();
+	testFibonaciHeap();
 	system("pause");
 }
 
@@ -727,4 +729,20 @@ void testFord()
 			}
 		}
 	}
+}
+
+void testFibonaciHeap()
+{
+	FibonaciHeap *h = initFibonaciHeap();
+
+	insertIntoFibonaciHeap(h, 10);
+	insertIntoFibonaciHeap(h, 3);
+	FibonaciNode *node = insertIntoFibonaciHeap(h, 12);
+	insertIntoFibonaciHeap(h, 5);
+	insertIntoFibonaciHeap(h, 11);
+	printf("%d\n", extractMin(h));
+
+	printf("%d\n", deleteFromFibonaciHeap(h, node));
+
+	destroyFibonaciHeap(&h);
 }

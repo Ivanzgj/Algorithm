@@ -692,7 +692,7 @@ void Ford_Fulkerson(int **c, int vertexNum, int s, int t, int **f)
 			}
 			else
 			{
-				*((int*)f + pre * vertexNum + next) -= min;
+				*((int*)f + next * vertexNum + pre) -= min;
 			}
 			next = pre;
 			pre = priorMatrix[pre];
