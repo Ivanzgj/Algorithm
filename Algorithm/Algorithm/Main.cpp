@@ -6,6 +6,7 @@
 #include "BTree.h"
 #include "Graph.h"
 #include "FibonaciHeap.h"
+#include "Collection.h"
 #include <stdio.h>
 
 void testSort();
@@ -29,10 +30,11 @@ void testTransitiveClosure();
 void testJohnson();
 void testFord();
 void testFibonaciHeap();
+void testCollection();
 
 void main()
 {
-	testFibonaciHeap();
+	testCollection();
 	system("pause");
 }
 
@@ -745,4 +747,18 @@ void testFibonaciHeap()
 	printf("%d\n", deleteFromFibonaciHeap(h, node));
 
 	destroyFibonaciHeap(&h);
+}
+
+void testCollection()
+{
+	Set *set = initSet(0x01);
+	Set *set1 = insert(set, 12);
+	Set *set2 = insert(set1, 10);
+	Set *set3 = insert(set2, 11);
+	Set *set4 = insert(set3, 16);
+	Set *set5 = insert(set4, 18);
+	Set *set6 = remove(set5);
+	printf("set after remove = %d\n", set6->member);
+	Set *set7 = findSet(set);
+	printf("set after findSet = %d\n", set7->member);
 }

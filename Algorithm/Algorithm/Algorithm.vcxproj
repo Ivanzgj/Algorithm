@@ -79,6 +79,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BTree.h" />
+    <ClInclude Include="Collection.h" />
     <ClInclude Include="DynamicProgramming.h" />
     <ClInclude Include="FibonaciHeap.h" />
     <ClInclude Include="Graph.h" />
@@ -89,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BTree.cpp" />
+    <ClCompile Include="Collection.cpp" />
     <ClCompile Include="DynamicProgramming.cpp" />
     <ClCompile Include="FibonaciHeap.cpp" />
     <ClCompile Include="Graph.cpp" />
