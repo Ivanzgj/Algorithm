@@ -144,6 +144,7 @@ void prim(Graph *g, int **w, int root)
 	GNode *links = g->LinkTable;
 	int vertexNum = g->VertexNum;
 
+	// 初始化
 	for (int i = 0; i < vertexNum; i++)
 	{
 		(vs + i)->weight = INF;
@@ -154,11 +155,12 @@ void prim(Graph *g, int **w, int root)
 
 	while (1)
 	{
-		int no = min(vs, vertexNum);
+		int no = min(vs, vertexNum);	// 找到最短顶点
 		if (no == 0)
 		{
 			break;
 		}
+		// 更新最短顶点相邻顶点到最小树的距离
 		Vertex *u = vs + no - 1;
 		u->f = 1;
 		GNode *link = links + no - 1;
@@ -191,6 +193,7 @@ int min(Vertex *vs, int num)
 	}
 	return m + 1;
 }
+
 
 
 

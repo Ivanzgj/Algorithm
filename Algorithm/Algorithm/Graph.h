@@ -40,6 +40,7 @@ void printPath(Graph *g, int vertex);
 void topologySort(Graph *g, int **order, int *n);
 
 void prim(Graph *g, int **w, int root);
+void kruscal(Graph *g, int **w);
 
 bool Bellman_Ford(Graph *g, int **w, int s);
 void dagShortestPaths(Graph *g, int **w, int s);
